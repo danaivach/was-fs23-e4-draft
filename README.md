@@ -1,236 +1,80 @@
-# Programming your first Agent! 
+# Exercise 2: Operating on Linked Data 
 
-This tutorial provides an introduction to how to program agents in the AgentSpeak language with the [JaCaMo framework](https://jacamo-lang.github.io/documentation/). The tutorial is based on the winning solution developed in the context of the 2nd [Multi-Agent Programming (CLIMA VII) Contest](https://multiagentcontest.org/). No submission is required, but feel free to [send me](mailto:danai.vachtsevanou@unisg.ch) your questions.
-
-Recommended editor: [Visual Studio Code](https://code.visualstudio.com/)
-
-Available VSCode Terminal syntax highlighters: 
-- For AgentSpeak: [code-mas2j](https://marketplace.visualstudio.com/items?itemName=tkampik.code-mas2j)
-- For JaCaMo: [code-jcm](https://marketplace.visualstudio.com/items?itemName=u473t8.code-jcm)
-
-Optional reading material: [<u>Chapter 4.1</u> of Boissier, O., Bordini, R. H., Hubner, J., & Ricci, A. (2020). Multi-agent oriented programming: programming multi-agent systems using JaCaMo. Mit Press.](https://mitpress.ublish.com/book/multi-agent-oriented-programming-programming-multi-agent-systems-using-jacamo)
+This repository contains a partial implementation of a [JaCaMo](https://github.com/jacamo-lang/jacamo) application, in which autonomous agents are able to operate on Linked Data in a social graph — and to manage personal data of a user.
 
 ## Table of Contents
--   [How to run the project](#how-to-run-the-project)
--   [Gold Miners Tutorial](#gold-miners-tutorial)
-    -  [Task 1 - Hello World](#task-1---hello-world)
-    -  [Task 2 - Beliefs about the world](#task-2---beliefs-about-the-world)
-    -  [Task 3 - Reactive behavior](#task-3---reactive-behavior)
-    -  [Task 4 - Proactive behavior](#task-4---proactive-behavior)
-    -  [Task 5 - Social ability](#task-5---social-ability)
-    -  [Task 6 - Towards Multi-Agent Systems](#task-6---towards-multi-agent-systems)
+- [Project structure](#project-structure)
+- [Task 2](#task-2)
+  - [Task 2.1](#task-21)
+  - [Task 2.2](#task-22)
+  - [Task 2.3](#task-23)
+- [How to run the project](#how-to-run-the-project)
+  1. [Run the mockserver that mocks the tractors' HTTP APIs](#1-run-the-mockserver-that-mocks-the-tractors-http-apis)
+  2. [Run the JaCaMo application](#2-run-the-jacamo-application)
+
+## Project structure
+```
+├── SAMOD // the only directory required for Tasks 2.1 and 2.2
+│   └── agriculture-domain 
+│       ├── README.md // the description of the Motivating Scenario, including the Competency Questions and the preliminary Glossary of terms
+│       ├── tbox.ttl // the preliminary TBox that implements the description of the terms in the glossary
+│       ├── abox.ttl // the preliminary ABox that implements the description of the first 3 competency questions
+│       └── queries  
+│           ├── insert // queries for populating a knowledge graph based on the ABox
+│           └── select // queries for testing the knowledge graph based on the competency questions
+│ // the rest are required for Task 2.3
+├── mockserver
+│   └── tractors.json // the configuration file for the mockserver that mocks the HTTP APIs of farm tractors 
+├── src
+│   ├── agt
+│   │   ├── irrigator.asl // agent program of the agent that irrigates the soil
+│   │   └── moisture_detector.asl // agent program of the agent that detects the moisture level of soil
+│   └── env
+│       ├── farm
+│       │   └── FarmKG.java // artifact that can be used for querying a GraphDB repository
+│       └── wot
+│           └── ThingArtifact.java // artifact that can be used for interacting with W3C Web of Things (WoT) Things
+├── task.jcm // the configuration file of the JaCaMo application for Task 2.3
+└── wot-td-java // library for the W3C Web of Things (WoT) Thing Description (TD)
+```
+
+## Task 2 
+### Modify the Access Control resource of a Solid pod
+### Interact with a Linked Data Platform Container
+- Update line 24 in the JaCaMo configuration file [task.jcm](task.jcm), so that the project uses your own Solid pod:
+```
+artifact pod: solid.Pod("https://solid.interactions.ics.unisg.ch/your-pod-name")
+```
+
+- Complete the implementation of the Java class [`Pod`](src/env/solid/Pod.java) that enable autonomous agents to handle a Linked Data Platform Container in your pod:
+    - Implement the method `createContainer()` which enables agents to create a container in your pod 
+    - Implement the method `publishData()` which enables agents to publish data (text/plain) in a container of your pod
+    - Implement the method `readData()` which enables agents to read data (text/plain) from a container of your pod
+    - TIPS:
+        - [Creating containers based on the Linked Data Platform 1.0 documentation](https://www.w3.org/TR/ldp-primer/#creating-containers-and-structural-hierarchy)
+        - [Creating resources (e.g. publishing data to a container) based on the Solid Community Server documentation](https://communitysolidserver.github.io/CommunitySolidServer/5.x/usage/example-requests/#put-creating-resources-for-a-given-url)
+        - [Retrieving resources (e.g. reading data from a container) based on the Solid Community Server documentation](https://communitysolidserver.github.io/CommunitySolidServer/5.x/usage/example-requests/#get-retrieving-resources)
 
 ## How to run the project
-In the [VSCode Terminal](https://code.visualstudio.com/docs/terminal/basics) or your preferred CLI, run with [Gradle 7.4](https://gradle.org/): 
-- MacOS and Linux: run the following commands
-- Windows: replace `./gradlew` with `gradlew.bat`
+### 1. Run the mockserver that mocks the tractors' HTTP APIs
 
-For Tasks 1-4:
+Run [MockServer](https://www.mock-server.com/) with [Docker](https://www.docker.com/):
+   ```
+   docker run -v "$(pwd)"/mockserver/tractors.json:/tmp/mockserver/tractors.json -e MOCKSERVER_INITIALIZATION_JSON_PATH=/tmp/mockserver/tractors.json -d --rm --name      mockserver -p 1080:1080 mockserver/mockserver
+   ```
+ The above command will run a Docker container in the background and will print the container ID. To stop a container run: `docker stop <CONTAINER_ID>`.
+You can use this [Postman collection](https://api.postman.com/collections/2431802-7df760e4-7bd6-430a-a15f-f189b66ad619?access_key=PMAT-01GTWY6C8F4EZ44DV7T7Y7XWAF) to inspect the behavior of the tractors' mockserver.
+
+
+### 2. Run the JaCaMo application
+
+You can run the project directly in Visual Studio Code or from the command line with Gradle 7.4.
+- In VSCode:  Click on the Gradle Side Bar elephant icon, and navigate through `GRADLE PROJECTS` > `exercise-3` > `Tasks` > `jacamo` > `task`.
+- On MacOS and Linux run the following command:
 ```shell
-./gradlew task_a
+./gradlew task
 ```
-For Task 5:
+- On Windows run the following command:
 ```shell
-./gradlew task_b
+gradle.bat task
 ```
-For Task 6: 
-```shell
-./gradlew task_c
-```
-
-## Gold Miners Tutorial
-
-| :book: _Recently, rumours about the discovery of gold scattered around deep Carpathian woods made their way into the public. Consequently hordes of gold miners are pouring into the area in the hope to collect as much of gold nuggets as possible. Two small teams of gold miners find themselves exploring the same area, avoiding trees and bushes and competing for the gold nuggets spread around the woods. The gold miners of each team coordinate their actions in order to collect as much gold as they can and to deliver it to the trading agent located in a depot where the gold is safely stored._   |
-| :-- |
-
-### Task 1 - Hello world
-In `miner.asl`, l. 8-12 define the _initial beliefs and goals_ of a miner agent. The miner is initialized as follows:
-- `ready_to_explore`: the agent believes that it is ready to explore the mine for gold;
-- `!start`: the agent has the goal to start.
-
-Upon initialization, the miner reacts to the creation of initial beliefs and goals. For example, the miner stives to achieve the goal `!start` by executing the `start_plan` (l. 19-21). Update the body of the `start_plan` so that the miner prints "Hello world" upon initialization.
-
-<details>
-<summary>Solution</summary>
-
-```
-// miner.asl
-
-/* 
- * Plan for achieving the goal !start 
- * Triggering event: Creation of goal !start
- * Context: true (the plan is always applicable)
- * Body: prints "Hello World"
-*/
-@start_plan 
-+!start : true 
-   <- .print("Hello World").
-```
-
-</details>
-
-### Task 2 - Beliefs about the world
-An agent can update, add, or remove beliefs of its belief base at run time, so that its behavior remains decoupled details about the world.
-
-The miner agent reacts to the creation of the initial belief `ready_to_explore` by executing the `ready_to_explore_plan_1` (l.32-37). Based on the body of the plan, the miner behaves as follows:
-- it computes a random position (X,Y) within the mine environment;
-- it creates the goal `!explore(X,Y)` for exploring the route to (X,Y) while looking for gold.
-
-Currently, the dimension of the mine environment (Width = 21, Height = 21) are hardcoded into the miner's plan. We can also use variable to decouple the miner's plan from specific environment details. Visit http://localhost:3272/ to inspect which beliefs the agent acquires at run time:
-
-<img src="media/miner1-beliefs.png?raw=true" width="400">
-
-Check the agent's belief about the environment size (`env_size`) to update:
-- the context of `ready_to_explore_plan_1` so that the plan is only executed when the agent has a belief `env_size(X,Y)`. Now, the plan will be applicable only if the variables X, Y become bound to specific values based on a _ground_ belief (e.g. `env_size(100, 100)`) of the miner's belief base at run time.
-- the body of the plan so that the random position is computed based on the variables X, Y instead of the hardcoded values 20, 20. 
-
-<details>
-<summary>Solution</summary>
-
-```
-// miner.asl
-
-/* 
- * Plan for reacting to a new belief ready_to_explore. 
- * The miner reacts by deciding to explore the route to a random position in the environment.
- * Triggering event: Addition of belief ready_to_explore
- * Context: true (the plan is always applicable)
- * Body: the miner computes a random position (X,Y) and creates the goal to explore the route to it 
-*/
-@ready_to_explore_plan_1
-+ready_to_explore : env_size(W,H)
-   <-  
-      jia.random(X,W-1) ; // action that unifies X with a random number in [0, W-1]
-      jia.random(Y,H-1) ; // action that unifies Y with a random number in [0, H-1]
-      .print("I will create the goal to explore (",X,",", Y,")");
-      !explore(X,Y) . // creates goal explore(X,Y)
-```
-
-</details>
-
-### Task 3 - Reactive behavior
-An agent can react when a belief of its belief base is updated, added, or removed.
-    
-While exploring the mine environment, the miner can perceive gold located at its adjacent positions (perception scope radius: 1 grid). 
-
-Click on the cells of the Mining World GUI to add gold for the miner to discover, and inspect the beliefs of the agent at http://localhost:3272/ to see the addition of the belief `gold` when the miner perceives any gold. 
-
-Create a `gold_plan` in `miner.asl` to enable the agent to _react to the addition of a belief_ `gold(X,Y)` by behaving as follows:
-- the plan is triggered by the addition of the belief `gold(X,Y)` to the belief base (triggering event: `+gold(X,Y)`);
-- the plan is applicable when the agent believes that it is `ready_to_explore` and (`&`) it is `not carrying_gold` (context);
-- the plan prints a message about the position (X,Y) of the discovery of gold (body).
-
-<details>
-<summary>Solution</summary>
-
-```
-// miner.asl
-
-/* 
- * Plan for reacting to a new belief gold(X,Y). 
- * Triggering event: addition of belief gold(X,Y)
- * Context: the miner believes that it is ready to explore, and does not believe that it is carrying gold
-*/
-@gold_plan[atomic]          
-+gold(X,Y)
-  :  ready_to_explore & not carrying_gold
-  <- .print("Gold perceived: ",gold(X,Y)).
-```
-
-</details>
-
-### Task 4 - Proactive behavior 
-An agent can strive to achieve a goal when a goal is created.
-    
-Even though the agent perceives gold in the environment, it cannot achieve to pick it up and drop it in the mine base.
-
-Update `handle_gold_plan` so that it enables the miner to pursue the goal of a) picking the perceived gold, and b) dropping it in the base by behaving as as follows:
-- the plan is triggered by the creation of the goal `!handle_gold(gold(X,Y))` (triggering event: `+!handle_gold(gold(X,Y))`)
-- the plan is applicable when the agent believes that it is `not ready_to_explore` and that `mine_base(BaseX, BaseY)`
-- the plan has a body that consists of the following:
-  - the miner creates the goal of moving to the position of the gold (goal: `!moveTo`)
-  - the miner picks the gold (action: `pick`)
-  - the miner creates the goal of confirming that the gold has been picked (goal: `!confirm_pick`)
-  - the miner creates the goal of moving to the position of the base (goal: `!moveTo`)
-  - the miner creates the goal of confirming that the base is there (goal: `!confirm_base`)
-  - the miner drops the gold at the base (action: `drop`)
-  - the miner creates the goal of handling other gold pieces (goal: `!choose_gold`)
-    
-<details>
-<summary>Solution</summary>
-
-```
-// miner.asl
-
-/* 
- * Plan for achieving the goal !handle(gold(X,Y))
- * The agent strives to achieve the goal by a) picking the perceived gold, and b) dropping it in the base
- * Triggering event: creation of goal !handle(gold(X,Y))
- * Context: the miner believes that the mine base is in position (BaseX,BaseY) and it is not ready_to_explore
- */
-+!handle(gold(X,Y)) 
-  :  not ready_to_explore & mine_base(BaseX,BaseY)
-  <- .print("Handling ",gold(X,Y)," now.");
-     !move_to(X,Y); // creates the goal of moving to the position of the gold
-     pick; // action that picks the gold
-     !confirm_pick; // creates the goal of confirming that the gold has been picked
-     !move_to(BaseX,BaseY); // creates the goal of moving to the position of the base
-     !confirm_base; // creates the goal of confirming that the base is there
-     drop; // action that drops the gold at the base
-     .print("Finish handling ",gold(X,Y));
-     !!choose_gold. // creates the goal of handling other gold pieces
-```
-
-</details>
-
-### Task 5 - Social Ability
-
-Agents can communicate with each other in order to share knowledge (i.e. beliefs) about the world.
-    
-The environment now becomes more dynamic, since a `leader` agent is responsible for frequently moving the base of the mine (ADD WHY). As a result, the miner may fail to drop the gold at the base if the position of the base does not match the miner's initial belief (`mine_base(0,0)). 
-
-Update the `work_on_base_plan_1` in `leader.asl` so that the leader [tells](https://jason.sourceforge.net/api/jason/stdlib/send.html) the miner about the new position of the base every time it moves the base.
-
-<details>
-<summary>Solution</summary>
-
-```
-// leader.asl
-@work_on_base_plan_1
-+!work_on_base : env_size(W,H) 
-   <- .wait(10000);
-      jia.random(X,W-1) ; // action that unifies X with a random number in [0, W-1]
-      jia.random(Y,H-1) ; // action that unifies Y with a random number in [0, H-1]
-      move_base(X,Y); // action that moves the base to position (X,Y)
-      -+mine_base(X,Y); // removes the old belief mine_base(_,_) and adds a new belief mine_base(X,Y) 
-      .send(miner, tell, mine_base(X,Y)); // sends a message to miner telling that the mine_base is in position (X,Y)
-      !work_on_base. // creates the goal !work_on_base
-```
-
-</details>
-
-### Task 6 - Towards Multi-Agent Systems
-    
-More than one agents can be situated in the same environment
-
-Now 4 miners and 1 leader are situated in the mine environment. However, only the first miner receives messages from the leader, while the rest of the miners do not get informed about the position of the base. 
-
-Update the `work_on_base_plan_1` in `leader.asl` so that the leader now [broadcasts](https://jason.sourceforge.net/api/jason/stdlib/broadcast.html) the position of the mine base to all the agents instead of only telling `miner`.
-
-<details>
-<summary>Solution</summary>
-
-```
-// leader.asl
-@work_on_base_plan_1
-+!work_on_base : env_size(W,H) 
-   <- .wait(10000);
-      jia.random(X,W-1) ; // action that unifies X with a random number in [0, W-1]
-      jia.random(Y,H-1) ; // action that unifies Y with a random number in [0, H-1]
-      move_base(X,Y); // action that moves the base to position (X,Y)
-      -+mine_base(X,Y); // removes the old belief mine_base(_,_) and adds a new belief mine_base(X,Y) 
-      .boradcast(tell, mine_base(X,Y)); // broadcasts a message telling that the mine_base is in position (X,Y)
-      !work_on_base. // creates the goal !work_on_base
-```
-
-</details>
