@@ -1,12 +1,5 @@
 package solid;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
 import cartago.Artifact;
 import cartago.OPERATION;
 import cartago.OpFeedbackParam;
@@ -22,29 +15,12 @@ public class Pod extends Artifact {
 
     @OPERATION
     public void createContainer(String containerName) {
-        try {
-            URI uri = new URI(podURL + "/" + containerName + "/");
+        log("Implement the method createContainer()");
+    }
 
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .PUT(HttpRequest.BodyPublishers.noBody())
-                .build();
-             
-            HttpClient client = HttpClient.newHttpClient();
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() != 201) {
-                    log("Error message: " + response.body());
-                    throw new RuntimeException("HTTP error code : " + response.statusCode());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+    @OPERATION
+    public void publishData(String containerName, String fileName, Object[] data) {
+        log("Implement the method publishData()");
     }
 
     @OPERATION
@@ -53,64 +29,23 @@ public class Pod extends Artifact {
     }
 
     public Object[] readData(String containerName, String fileName) {
-       
-        try {
-            URI uri = new URI(podURL + "/" + containerName + "/" + fileName);
+        log("Implement the method readData(). Currently, the method returns mock data");
 
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
-             
-            HttpClient client = HttpClient.newHttpClient();
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() != 200) {
-                    log("Error message: " + response.body());
-                    throw new RuntimeException("HTTP error code : " + response.statusCode());
-                } else {
-                    return createArrayFromString(response.body());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        // Remove the following mock responses once you have implemented the method
+        switch(fileName) {
+            case "watchlist.txt":
+                Object[] mockWatchlist = new Object[]{"Matrix", "Inseption", "Avengers: Endgame"};
+                return mockWatchlist;
+            case "sleep.txt":
+                Object[] mockSleepData = new Object[]{"6", "7", "5"};
+                return mockSleepData;
+            case "trail.txt":
+                Object[] mockTrailData = new Object[]{"3", "5.5", "5.5"};
+                return mockTrailData; 
+            default:
+                return new Object[0];
         }
 
-        return new Object[0];
-    }
-
-    @OPERATION
-    public void publishData(String containerName, String fileName, Object[] data) {
-        try {
-            URI uri = new URI(podURL + "/" + containerName + "/" + fileName);
-
-            String requestBody = createStringFromArray(data);
-            
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .header("Content-Type", "text/plain")
-                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-            
-            HttpClient client = HttpClient.newHttpClient();
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() != 201 && response.statusCode() != 205) {
-                    log("Error message: " + response.body());
-                    throw new RuntimeException("HTTP error code : " + response.statusCode());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
     }
 
     public static String createStringFromArray(Object[] array) {
