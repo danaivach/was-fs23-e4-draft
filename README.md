@@ -65,7 +65,7 @@ Implement the method `readData()` of the Java class [`Pod`](src/env/solid/Pod.ja
    
 ## How to run the project
 You can run the project directly in Visual Studio Code or from the command line with Gradle 7.4.
-- In VSCode:  Click on the Gradle Side Bar elephant icon, and navigate through `GRADLE PROJECTS` > `exercise-3` > `Tasks` > `jacamo` > `task`.
+- In VSCode:  Click on the Gradle Side Bar elephant icon, and navigate through `GRADLE PROJECTS` > `exercise-4` > `Tasks` > `jacamo` > `task`.
 - On MacOS and Linux run the following command:
 ```shell
 ./gradlew task
