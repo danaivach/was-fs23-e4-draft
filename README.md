@@ -15,7 +15,15 @@ This repository contains a partial implementation of a [JaCaMo](https://github.c
 
 ## Project structure
 ```
-
+├── src
+│   ├── agt
+│   │   ├── movie_manager.asl // agent program of the agent that stores in your pod the titles of movies you add to your watchlist
+│   │   ├── wristband_manager.asl // agent program of the agent that stores in your pod information about your sleep and running trails
+│   │   └── personal_assistant.asl // agent program of the agent that recommends to you activities based on your personal data
+│   └── env
+│       └── solid
+│           └── Pod.java // artifact that can be used for interacting with an LDP container in a Solid pod
+└── task.jcm // the configuration file of the JaCaMo application
 ```
 
 ## Task 2 
