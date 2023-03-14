@@ -42,7 +42,7 @@ This repository contains a partial implementation of a [JaCaMo](https://github.c
 ```
 
 ### Interact with a Linked Data Platform Container
-First, update the line 24 in the JaCaMo configuration file [task.jcm](task.jcm), so that the project uses your own Solid pod:
+First, update line 24 in the JaCaMo configuration file [task.jcm](task.jcm), so that the project uses your own Solid pod:
 ```
 artifact pod: solid.Pod("https://solid.interactions.ics.unisg.ch/your-pod-name")
 ```
