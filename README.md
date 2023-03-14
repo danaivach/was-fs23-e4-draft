@@ -1,6 +1,6 @@
 # Exercise 2: Operating on Linked Data 
 
-This repository contains a partial implementation of a [JaCaMo](https://github.com/jacamo-lang/jacamo) application, in which autonomous agents are able to operate on Linked Data in a social graph — and to manage personal data of a user.
+This repository contains a partial implementation of a [JaCaMo](https://github.com/jacamo-lang/jacamo) application, in which autonomous agents are able to operate on Linked Data in a distributed social network — and to manage personal data of a user.
 
 ## Table of Contents
 - [Project structure](#project-structure)
