@@ -57,11 +57,11 @@ Implement the method `createContainer()` of the Java class [`Pod`](src/env/solid
 
 #### 2. Adding data to an LDP container
 Implement the method `publishData()` of the Java class [`Pod`](src/env/solid/Pod.java) that enables agents to publish data (text/plain) to an LDP container in your pod.
-- TIP: [Creating resources (e.g. publishing data to a container) based on the Solid Community Server documentation]
+- TIP: [Creating resources (e.g. publishing data to a container) based on the Solid Community Server documentation](https://communitysolidserver.github.io/CommunitySolidServer/5.x/usage/example-requests/#put-creating-resources-for-a-given-url)
 
 #### 3. Reading data from an LDP container
 Implement the method `readData()` of the Java class [`Pod`](src/env/solid/Pod.java) that enables agents to read data (text/plain) from an LDP container in your pod.
-- TIP: [Retrieving resources (e.g. reading data from a container) based on the Solid Community Server documentation]
+- TIP: [Retrieving resources (e.g. reading data from a container) based on the Solid Community Server documentation](https://communitysolidserver.github.io/CommunitySolidServer/5.x/usage/example-requests/#get-retrieving-resources)
    
 ## How to run the project
 You can run the project directly in Visual Studio Code or from the command line with Gradle 7.4.
