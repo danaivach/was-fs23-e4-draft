@@ -28,7 +28,7 @@ This repository contains a partial implementation of a [JaCaMo](https://github.c
 
 ## Task 2 
 ### Edit the Access Control List of your Solid pod
-- Use [PodPro](https://podpro.dev/) to navigate and edit the Access Control List (ACL) of your Solid pod (https://solid.interactions.ics.unisg.ch/your-pod-name/.acl). Update the <#public> authorization rule based on the [Web Access Control vocabulary](https://solid.github.io/web-access-control-spec/#authorization-rule) so that agents can interact with your pod to read and/or write data:
+- Use [PodPro](https://podpro.dev/) to navigate and edit the Access Control List (ACL) of your Solid pod (https://solid.interactions.ics.unisg.ch/your-pod-name/.acl). Update the `<#public>` authorization rule based on the [Web Access Control vocabulary](https://solid.github.io/web-access-control-spec/#authorization-rule) so that agents can interact with your pod to read and/or write data:
 ```
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
