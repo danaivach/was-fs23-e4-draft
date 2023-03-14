@@ -12,7 +12,7 @@ mas quantified_self {
         focus: self.pod
     }
 
-    agent streaming_manager : streaming_manager.asl  {
+    agent movie_manager : movie_manager.asl  {
         focus: self.pod
     }
 
